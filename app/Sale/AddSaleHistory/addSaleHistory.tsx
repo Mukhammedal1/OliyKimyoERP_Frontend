@@ -34,7 +34,6 @@ import {
   useGetAllCustomer,
 } from "../../../hooks/useCustomer";
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
 import { useCreateProduct, useGetAllProduct } from "../../../hooks/useProduct";
 import { useGetAllCategory } from "../../../hooks/useCategory";
 import { useGetAllUnit } from "../../../hooks/useUnit";
@@ -46,6 +45,7 @@ import { EditIcon } from "../../../icons/edit-icon";
 import { formatDate } from "../../../utils/formatDate";
 import Draggable from "react-draggable";
 import { useCreateSale } from "../../../hooks/useSale";
+import { useRouter } from "next/router";
 
 const AddSaleHistoryPage = () => {
   const router = useRouter();
