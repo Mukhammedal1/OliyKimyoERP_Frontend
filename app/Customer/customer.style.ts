@@ -11,7 +11,7 @@ export const NavWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   span {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 500;
   }
   margin-bottom: 20px;
@@ -25,9 +25,6 @@ export const SearchWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 20px;
-  border: 1px solid #334155;
-  border-radius: 8px;
   button {
     background-color: #1e293b;
     color: white;
@@ -46,6 +43,13 @@ export const SearchWrapper = styled.div`
   }
 `;
 
+export const SearchWrapper2 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+`;
+
 export const ProfileWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -55,9 +59,17 @@ export const ProfileWrapper = styled.div`
 
 export const InputWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 15px;
+  padding: 6px 12px;
+  border-radius: 8px;
   align-items: center;
-  width: 23%;
+  width: 55%;
+  border: 1px solid #334155;
+  input {
+    outline: none;
+    width: 85%;
+  }
 `;
 
 export const TableWrapper = styled.div`
@@ -76,7 +88,7 @@ export const TableHead = styled.div`
   background-color: #1e293b;
   color: white;
   font-weight: 600;
-  padding: 12px 16px;
+  padding: 8px 10px;
   text-align: left;
   position: sticky;
   top: 0;
@@ -91,8 +103,9 @@ export const TableHead = styled.div`
 export const TableBody = styled.div`
   display: grid;
   grid-template-columns: 40px 2fr 2fr 2fr 2fr 100px;
-  padding: 10px 16px;
+  padding: 8px 10px;
   border-bottom: 1px solid #eee;
+  cursor: pointer;
   &:hover {
     background-color: #f3f4f6;
   }
@@ -100,6 +113,16 @@ export const TableBody = styled.div`
     padding: 4px 8px;
     font-size: 14px;
     text-align: center;
+    border-right: 1px solid #eee;
+    &:last-child {
+      border-right: none;
+    }
+  }
+  .red {
+    color: red;
+  }
+  .green {
+    color: green;
   }
 `;
 
@@ -142,4 +165,11 @@ export const ProfileIconWrapper = styled.div`
     margin-top: 7px;
     margin-left: 7px;
   }
+`;
+
+export const SwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 35%;
 `;

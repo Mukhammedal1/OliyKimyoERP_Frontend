@@ -3,8 +3,11 @@ import {
   Container,
   IconWrapper,
   InputWrapper,
+  ListWrapper,
   NavWrapper,
   NotProductWrapper,
+  ProductsRow,
+  ProductsTable,
   ProfileIconWrapper,
   ProfileWrapper,
   SearchWrapper,
@@ -22,6 +25,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { formatDate } from "../../utils/formatDate";
 import { useDeleteSale, useGetAllSale } from "../../hooks/useSale";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 const SaleHistoryPage = () => {
   const router = useRouter();
@@ -29,6 +33,11 @@ const SaleHistoryPage = () => {
   const { mutate: deleteSale } = useDeleteSale();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [openRowId, setOpenRowId] = useState<string | null>(null);
+
+  const handleClickChevronIcon = (id: string) => {
+    setOpenRowId((prev) => (prev === id ? null : id));
+  };
 
   const handleOpenDialog = (id: string) => {
     setSelectedId(id);
@@ -99,24 +108,61 @@ const SaleHistoryPage = () => {
           <NotProductWrapper>Sotuvlar mavjud emas</NotProductWrapper>
         ) : (
           sales.map((sale: any, index: number) => (
-            <TableBody key={sale._id}>
-              <span>{index + 1}</span>
-              <span>{sale.products[0].product_id.name}...</span>
-              <span>{sale.total_amount}</span>
-              <span>{sale.paid_amount}</span>
-              {sale.customer ? (
-                <span>{sale.customer.name}</span>
-              ) : sale.customer_phone ? (
-                <span>{sale.customer_phone}</span>
-              ) : (
-                <span>-</span>
+            <>
+              <TableBody key={sale._id}>
+                <span>{index + 1}</span>
+                <ListWrapper>
+                  {sale.products[0].product_id.name}...
+                  {openRowId === sale._id ? (
+                    <FiChevronUp
+                      onClick={() => handleClickChevronIcon(sale._id)}
+                    />
+                  ) : (
+                    <FiChevronDown
+                      onClick={() => handleClickChevronIcon(sale._id)}
+                    />
+                  )}
+                </ListWrapper>
+                <span>{sale.total_amount.toLocaleString()}</span>
+                <span>{sale.paid_amount.toLocaleString()}</span>
+                {sale.customer ? (
+                  <span>{sale.customer.name}</span>
+                ) : sale.customer_phone ? (
+                  <span>{sale.customer_phone}</span>
+                ) : (
+                  <span>-</span>
+                )}
+                <span>{formatDate(sale.createdAt)}</span>
+                <IconWrapper>
+                  <DeleteIcon onClick={() => handleOpenDialog(sale._id)} />
+                  <EditIcon onClick={() => handleEditSale(sale._id)} />
+                </IconWrapper>
+              </TableBody>
+              {openRowId === sale._id && (
+                <ProductsRow>
+                  <ProductsTable>
+                    <thead>
+                      <tr>
+                        <th>Mahsulot</th>
+                        <th>Miqdor</th>
+                        <th>Narx</th>
+                        <th>Jami</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sale.products.map((product: any, index: number) => (
+                        <tr key={index}>
+                          <td>{product.product_id?.name}</td>
+                          <td>{product.quantity}</td>
+                          <td>{product.price.toLocaleString()}</td>
+                          <td>{product.total_price.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </ProductsTable>
+                </ProductsRow>
               )}
-              <span>{formatDate(sale.createdAt)}</span>
-              <IconWrapper>
-                <DeleteIcon onClick={() => handleOpenDialog(sale._id)} />
-                <EditIcon onClick={() => handleEditSale(sale._id)} />
-              </IconWrapper>
-            </TableBody>
+            </>
           ))
         )}
       </TableWrapper>

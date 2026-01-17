@@ -7,6 +7,7 @@ import {
   Input,
   InputWrapper,
   NavWrapper,
+  NoteWrapper,
   ProfileIconWrapper,
   ProfileWrapper,
 } from "./editCustomer.style";
@@ -28,6 +29,7 @@ const EditCustomerPage = () => {
     name: "",
     phone_number: "",
     debt_amount: 0,
+    note: "",
   });
 
   useEffect(() => {
@@ -37,6 +39,7 @@ const EditCustomerPage = () => {
         name: data.name || "",
         phone_number: data.phone_number || "",
         debt_amount: data.debt_amount || 0,
+        note: data.note || "",
       });
     }
   }, [data]);
@@ -54,6 +57,7 @@ const EditCustomerPage = () => {
           name: customerData.name,
           phone_number: customerData.phone_number,
           debt_amount: Number(customerData.debt_amount) || 0,
+          note: customerData.note,
         },
       },
       {
@@ -134,6 +138,20 @@ const EditCustomerPage = () => {
                   }
                 />
               </Input>
+            </InputWrapper>
+            <InputWrapper>
+              <p>Izoh</p>
+              <NoteWrapper>
+                <textarea
+                  value={customerData.note}
+                  onChange={(e) => {
+                    setCustomerData({ ...customerData, note: e.target.value });
+                  }}
+                  name=""
+                  id=""
+                  placeholder="Izoh..."
+                ></textarea>
+              </NoteWrapper>
             </InputWrapper>
           </ContentWrapper>
 

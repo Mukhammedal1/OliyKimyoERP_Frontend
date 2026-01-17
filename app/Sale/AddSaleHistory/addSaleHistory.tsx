@@ -46,13 +46,14 @@ import { formatDate } from "../../../utils/formatDate";
 import Draggable from "react-draggable";
 import { useCreateSale } from "../../../hooks/useSale";
 import { useRouter } from "next/router";
+import Select from "react-select";
 
 const AddSaleHistoryPage = () => {
   const router = useRouter();
   const nodeRef = useRef(null);
-  
+
   const [phone_number, setPhoneNumber] = useState("");
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState<string | null>("");
   const [paid_amount, setPaidAmount] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [note, setNote] = useState("");
@@ -71,11 +72,21 @@ const AddSaleHistoryPage = () => {
     isLoading: isCustomerLoading,
     refetch: refetchCustomer,
   } = useGetAllCustomer();
+  const customerOptions = customers.map((c: any) => ({
+    value: c._id,
+    label: c.name,
+  }));
+
   const {
     data: products = [],
     isLoading: isProductLoading,
     refetch: refetchProduct,
   } = useGetAllProduct();
+
+  const productOptions = products.map((c: any) => ({
+    value: `${c._id}|${c.name}|${c.unit.name}`,
+    label: c.name,
+  }));
 
   useEffect(() => {
     if (customers.length > 0 && !customer) {
@@ -143,9 +154,13 @@ const AddSaleHistoryPage = () => {
       toast.error("To'langan summa jami summadan oshiq bo'lishi mumkin emas!");
       return;
     }
-    if (Number(totalPrice) !== Number(paid_amount) && isNewCustomer === true) {
+    if (
+      Number(totalPrice) !== Number(paid_amount) &&
+      isNewCustomer === true &&
+      !phone_number
+    ) {
       toast.error(
-        "Iltimos, Qolgan qarzni yozish uchun mijozni ro'yxatga qo'shing!"
+        "Iltimos, Qolgan qarzni yozish uchun telefon raqamni yozing!"
       );
       return;
     }
@@ -248,23 +263,53 @@ const AddSaleHistoryPage = () => {
               ) : (
                 <SelectWrapper>
                   <p>Mijozni tanlang:</p>
-                  <select
-                    value={customer}
-                    onChange={(e) => {
-                      setCustomer(e.target.value);
+                  <Select
+                    classNamePrefix="react-select"
+                    options={customerOptions}
+                    value={
+                      customerOptions.find(
+                        (option: any) => option.value === customer
+                      ) || null
+                    }
+                    onChange={(selectedOption: any) => {
+                      setCustomer(selectedOption?.value || null);
                     }}
-                    name=""
-                    id=""
-                  >
-                    {customers &&
-                      customers.map((customer: any) => {
-                        return (
-                          <option value={customer._id} key={customer._id}>
-                            {customer.name}
-                          </option>
-                        );
-                      })}
-                  </select>
+                    isSearchable={true}
+                    menuPortalTarget={document.body}
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        width: 250,
+                        borderRadius: 8,
+                        border: "2px solid #1e293b",
+                        boxShadow: "none",
+                        "&:hover": { borderColor: "#1e293b" },
+                      }),
+                      singleValue: (base) => ({ ...base, color: "black" }),
+                      placeholder: (base) => ({ ...base, color: "black" }),
+                      menu: (base) => ({
+                        ...base,
+                        borderRadius: 8,
+                        maxHeight: 200,
+                      }),
+                      menuList: (base) => ({
+                        ...base,
+                        padding: 0,
+                        maxHeight: 120,
+                        borderRadius: 8,
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        color: "black",
+                        backgroundColor: "white",
+                        "&:hover": {
+                          backgroundColor: "#1e293b",
+                          color: "white",
+                        },
+                      }),
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                  />
                 </SelectWrapper>
               )}
               <InputWrapper>
@@ -332,19 +377,53 @@ const AddSaleHistoryPage = () => {
                   <ContentWrapper2>
                     <SelectWrapper2>
                       <p>Mahsulotni tanlang</p>
-                      <select
-                        value={productIdNameUnit}
-                        onChange={(e) => setProductIdNameUnit(e.target.value)}
-                      >
-                        {products.map((product: any) => (
-                          <option
-                            value={`${product._id}|${product.name}|${product.unit.name}`}
-                            key={product._id}
-                          >
-                            {product.name}
-                          </option>
-                        ))}
-                      </select>
+                      <Select
+                        classNamePrefix="react-select"
+                        options={productOptions}
+                        value={
+                          productOptions.find(
+                            (option: any) => option.value === productIdNameUnit
+                          ) || null
+                        }
+                        onChange={(selectedOption: any) => {
+                          setProductIdNameUnit(selectedOption?.value || null);
+                        }}
+                        isSearchable={true}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            width: 250,
+                            borderRadius: 8,
+                            border: "2px solid #1e293b",
+                            boxShadow: "none",
+                            "&:hover": { borderColor: "#1e293b" },
+                          }),
+                          singleValue: (base) => ({ ...base, color: "black" }),
+                          placeholder: (base) => ({ ...base, color: "black" }),
+                          menu: (base) => ({
+                            ...base,
+                            borderRadius: 8,
+                            maxHeight: 200,
+                          }),
+                          menuList: (base) => ({
+                            ...base,
+                            padding: 0,
+                            maxHeight: 120,
+                            borderRadius: 8,
+                          }),
+                          option: (base, state) => ({
+                            ...base,
+                            color: "black",
+                            backgroundColor: "white",
+                            "&:hover": {
+                              backgroundColor: "#1e293b",
+                              color: "white",
+                            },
+                          }),
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        }}
+                      />
                     </SelectWrapper2>
 
                     <InputWrapper2>

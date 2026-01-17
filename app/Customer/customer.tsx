@@ -8,6 +8,8 @@ import {
   ProfileIconWrapper,
   ProfileWrapper,
   SearchWrapper,
+  SearchWrapper2,
+  SwitchWrapper,
   TableBody,
   TableHead,
   TableWrapper,
@@ -22,6 +24,7 @@ import Spinner from "../../components/LoadingComponent/loading";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { formatDate } from "../../utils/formatDate";
+import { Switch } from "@mui/material";
 
 const CustomerPage = () => {
   const router = useRouter();
@@ -29,6 +32,17 @@ const CustomerPage = () => {
   const { mutate: deleteCustomer } = useDeleteCustomer();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [onlyDebtors, setOnlyDebtors] = useState(false);
+
+  const filteredCustomers = customers.filter((customer: any) => {
+    const text = search?.toLowerCase();
+    const matchSearch =
+      customer.name?.toLowerCase().includes(text) ||
+      customer.phone_number?.includes(text);
+    const matchDebt = onlyDebtors ? customer.debt_amount > 0 : true;
+    return matchSearch && matchDebt;
+  });
 
   const handleOpenDialog = (id: string) => {
     setSelectedId(id);
@@ -64,6 +78,10 @@ const CustomerPage = () => {
     router.push(`/edit-customer/${id}`);
   };
 
+  const handleClickOneCustomer = (id: string) => {
+    router.push(`/one-customer/${id}`);
+  };
+
   return (
     <Container>
       <NavWrapper>
@@ -77,10 +95,26 @@ const CustomerPage = () => {
       </NavWrapper>
 
       <SearchWrapper>
-        <InputWrapper>
-          <SearchIcon />
-          <input type="text" placeholder="Mijozlarni qidirish..." />
-        </InputWrapper>
+        <SearchWrapper2>
+          <InputWrapper>
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="Mijozlarni qidirish..."
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
+          </InputWrapper>
+          <SwitchWrapper>
+            <Switch
+              checked={onlyDebtors}
+              onChange={(e) => setOnlyDebtors(e.target.checked)}
+              color="primary"
+            />
+            <span>Qarzdor mijozlar</span>
+          </SwitchWrapper>
+        </SearchWrapper2>
         <button onClick={handleAddCustomer}>Mijoz qo'shish</button>
       </SearchWrapper>
       <TableWrapper>
@@ -94,19 +128,38 @@ const CustomerPage = () => {
         </TableHead>
         {isLoading ? (
           <Spinner />
-        ) : customers.length === 0 ? (
+        ) : filteredCustomers.length === 0 ? (
           <NotCustomerWrapper>Mijozlar mavjud emas</NotCustomerWrapper>
         ) : (
-          customers.map((customer: any, index: number) => (
-            <TableBody key={customer._id}>
+          filteredCustomers.map((customer: any, index: number) => (
+            <TableBody
+              onClick={() => {
+                handleClickOneCustomer(customer._id);
+              }}
+              key={customer._id}
+            >
               <span>{index + 1}</span>
               <span>{customer.name}</span>
               <span>{customer.phone_number}</span>
-              <span>{customer.debt_amount}</span>
+              {customer.debt_amount > 0 ? (
+                <span className="red"> - {customer.debt_amount.toLocaleString()}</span>
+              ) : (
+                <span className="green">{customer.debt_amount.toLocaleString()}</span>
+              )}
               <span>{formatDate(customer.createdAt)}</span>
               <IconWrapper>
-                <DeleteIcon onClick={() => handleOpenDialog(customer._id)} />
-                <EditIcon onClick={() => handleEditCustomer(customer._id)} />
+                <DeleteIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    handleOpenDialog(customer._id);
+                  }}
+                />
+                <EditIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    handleEditCustomer(customer._id);
+                  }}
+                />
               </IconWrapper>
             </TableBody>
           ))

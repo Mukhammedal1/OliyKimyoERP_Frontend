@@ -90,4 +90,19 @@ export const ProfileIconWrapper = styled.div`
     margin-left: 7px;
   }
 `;
-// export const ProfileWrapper = styled.div``;
+
+export const NoteWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  textarea {
+    border-radius: 5px;
+    border: 2px solid #64748b;
+    resize: none;
+    width: 300px;
+    height: 94px;
+    outline: none;
+    padding: 7px;
+    font-size: 16px;
+  }
+`;

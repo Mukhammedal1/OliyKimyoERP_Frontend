@@ -3,6 +3,7 @@ import {
   createSale,
   deleteSale,
   getAllSale,
+  getAllSaleByCustomerId,
   getSaleById,
   updateSale,
 } from "../api/sale";
@@ -17,6 +18,14 @@ export const useGetSaleById = (id: string) => {
   return useQuery({
     queryKey: ["Sale", id],
     queryFn: () => getSaleById(id),
+    enabled: !!id,
+  });
+};
+
+export const useGetAllSaleByCustomerId = (id: string) => {
+  return useQuery({
+    queryKey: ["Sale", id],
+    queryFn: () => getAllSaleByCustomerId(id),
     enabled: !!id,
   });
 };

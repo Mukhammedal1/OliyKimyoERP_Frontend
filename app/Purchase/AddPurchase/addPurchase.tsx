@@ -48,6 +48,7 @@ import Draggable from "react-draggable";
 import { useCreateSale } from "../../../hooks/useSale";
 import { useCreatePurchase } from "../../../hooks/usePurchase";
 import { useGetAllSupplier } from "../../../hooks/useSupplier";
+import Select from "react-select";
 
 const AddPurchasePage = () => {
   const router = useRouter();
@@ -75,11 +76,19 @@ const AddPurchasePage = () => {
     isLoading: isSupplierLoading,
     refetch: refetchSupplier,
   } = useGetAllSupplier();
+  const supplierOptions = suppliers.map((c: any) => ({
+    value: c._id,
+    label: c.name,
+  }));
   const {
     data: products = [],
     isLoading: isProductLoading,
     refetch: refetchProduct,
   } = useGetAllProduct();
+  const productOptions = products.map((c: any) => ({
+    value: `${c._id}|${c.name}|${c.unit.name}`,
+    label: c.name,
+  }));
 
   useEffect(() => {
     if (suppliers.length > 0 && !supplier) {
@@ -148,15 +157,21 @@ const AddPurchasePage = () => {
       return;
     }
     if (Number(totalPrice) !== Number(paid_amount) && isNewSupplier === true) {
-      toast.error("Iltimos, Qolgan qarzni yozish uchun ta'minotchini ro'yxatga qo'shing!");
+      toast.error(
+        "Iltimos, Qolgan qarzni yozish uchun ta'minotchini ro'yxatga qo'shing!"
+      );
       return;
     }
-     if (Number(totalPrice) !== Number(paid_amount) && isNewSupplier === false && !supplier)  {
-       toast.error(
-         "Iltimos, Qolgan qarzni yozish uchun ta'minotchini ro'yxatga qo'shing!"
-       );
-       return;
-     }
+    if (
+      Number(totalPrice) !== Number(paid_amount) &&
+      isNewSupplier === false &&
+      !supplier
+    ) {
+      toast.error(
+        "Iltimos, Qolgan qarzni yozish uchun ta'minotchini ro'yxatga qo'shing!"
+      );
+      return;
+    }
 
     const formattedProducts = ourProducts.map((p) => ({
       product_id: p.product_id,
@@ -242,23 +257,53 @@ const AddPurchasePage = () => {
               ) : (
                 <SelectWrapper>
                   <p>Ta'minotchini tanlang:</p>
-                  <select
-                    value={supplier}
-                    onChange={(e) => {
-                      setSupplier(e.target.value);
+                  <Select
+                    classNamePrefix="react-select"
+                    options={supplierOptions}
+                    value={
+                      supplierOptions.find(
+                        (option: any) => option.value === supplier
+                      ) || null
+                    }
+                    onChange={(selectedOption: any) => {
+                      setSupplier(selectedOption?.value || null);
                     }}
-                    name=""
-                    id=""
-                  >
-                    {suppliers &&
-                      suppliers.map((supplier: any) => {
-                        return (
-                          <option value={supplier._id} key={supplier._id}>
-                            {supplier.name}
-                          </option>
-                        );
-                      })}
-                  </select>
+                    isSearchable={true}
+                    menuPortalTarget={document.body}
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        width: 250,
+                        borderRadius: 8,
+                        border: "2px solid #1e293b",
+                        boxShadow: "none",
+                        "&:hover": { borderColor: "#1e293b" },
+                      }),
+                      singleValue: (base) => ({ ...base, color: "black" }),
+                      placeholder: (base) => ({ ...base, color: "black" }),
+                      menu: (base) => ({
+                        ...base,
+                        borderRadius: 8,
+                        maxHeight: 200,
+                      }),
+                      menuList: (base) => ({
+                        ...base,
+                        padding: 0,
+                        maxHeight: 120,
+                        borderRadius: 8,
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        color: "black",
+                        backgroundColor: "white",
+                        "&:hover": {
+                          backgroundColor: "#1e293b",
+                          color: "white",
+                        },
+                      }),
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                  />
                 </SelectWrapper>
               )}
               <InputWrapper>
@@ -326,19 +371,53 @@ const AddPurchasePage = () => {
                   <ContentWrapper2>
                     <SelectWrapper2>
                       <p>Mahsulotni tanlang</p>
-                      <select
-                        value={productIdNameUnit}
-                        onChange={(e) => setProductIdNameUnit(e.target.value)}
-                      >
-                        {products.map((product: any) => (
-                          <option
-                            value={`${product._id}|${product.name}|${product.unit.name}`}
-                            key={product._id}
-                          >
-                            {product.name}
-                          </option>
-                        ))}
-                      </select>
+                      <Select
+                        classNamePrefix="react-select"
+                        options={productOptions}
+                        value={
+                          productOptions.find(
+                            (option: any) => option.value === productIdNameUnit
+                          ) || null
+                        }
+                        onChange={(selectedOption: any) => {
+                          setProductIdNameUnit(selectedOption?.value || null);
+                        }}
+                        isSearchable={true}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            width: 250,
+                            borderRadius: 8,
+                            border: "2px solid #1e293b",
+                            boxShadow: "none",
+                            "&:hover": { borderColor: "#1e293b" },
+                          }),
+                          singleValue: (base) => ({ ...base, color: "black" }),
+                          placeholder: (base) => ({ ...base, color: "black" }),
+                          menu: (base) => ({
+                            ...base,
+                            borderRadius: 8,
+                            maxHeight: 200,
+                          }),
+                          menuList: (base) => ({
+                            ...base,
+                            padding: 0,
+                            maxHeight: 120,
+                            borderRadius: 8,
+                          }),
+                          option: (base, state) => ({
+                            ...base,
+                            color: "black",
+                            backgroundColor: "white",
+                            "&:hover": {
+                              backgroundColor: "#1e293b",
+                              color: "white",
+                            },
+                          }),
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        }}
+                      />
                     </SelectWrapper2>
 
                     <InputWrapper2>

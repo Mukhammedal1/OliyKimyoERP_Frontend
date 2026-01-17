@@ -55,7 +55,7 @@ const SettingsPage = () => {
   };
 
   const handleBackFromUnit = () => {
-    setIsPassword(false);
+    setIsUnits(false);
     setIsSection(true);
   };
 

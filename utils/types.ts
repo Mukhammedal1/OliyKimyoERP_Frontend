@@ -15,6 +15,7 @@ export interface Customer {
   name: string;
   phone_number: string;
   debt_amount: number;
+  note: string;
 }
 
 export interface Supplier {

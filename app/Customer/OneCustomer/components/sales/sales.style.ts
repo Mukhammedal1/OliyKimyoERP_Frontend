@@ -1,68 +1,8 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-export const NavWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  span {
-    font-size: 20px;
-    font-weight: 500;
-  }
-  margin-bottom: 20px;
-  background-color: #1e293b;
-  color: white;
-  padding: 5px 30px;
-  border-radius: 8px;
-`;
-
-export const SearchWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 20px;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  button {
-    background-color: #1e293b;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 20px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    &:hover {
-      background-color: #1e293b;
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-`;
-
-export const ProfileWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 16%;
-`;
-
-export const InputWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 23%;
-`;
-
 export const TableWrapper = styled.div`
   width: 100%;
-  height: 450px;
+  height: 370px;
   border: 1px solid #334155;
   border-radius: 8px;
   overflow-y: auto;
@@ -72,7 +12,7 @@ export const TableWrapper = styled.div`
 
 export const TableHead = styled.div`
   display: grid;
-  grid-template-columns: 35px 1fr 1fr 1fr 245px 1fr 80px;
+  grid-template-columns: 30px 2fr 2fr 2fr 2fr 2fr 2fr;
   background-color: #1e293b;
   color: white;
   font-weight: 600;
@@ -90,9 +30,11 @@ export const TableHead = styled.div`
 
 export const TableBody = styled.div`
   display: grid;
-  grid-template-columns: 35px 1fr 1fr 1fr 245px 1fr 70px;
-  padding: 10px 16px;
+  grid-template-columns: 30px 2fr 2fr 2fr 2fr 2fr 2fr;
+  align-items: center;
+  padding: 8px 10px;
   border-bottom: 1px solid #eee;
+  cursor: pointer;
   &:hover {
     background-color: #f3f4f6;
   }
@@ -107,14 +49,20 @@ export const TableBody = styled.div`
       border-right: none;
     }
   }
+  .red {
+    color: red;
+  }
+  .blue {
+    color: green;
+  }
 `;
 
 export const IconWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 60px;
-  padding-left: 10px;
+  width: 80px;
+  padding-left: 25px;
 
   :first-child {
     cursor: pointer;
@@ -131,30 +79,10 @@ export const IconWrapper = styled.div`
     }
   }
 `;
-export const NotProductWrapper = styled.div`
+export const NotCustomerWrapper = styled.div`
   font-size: 25px;
   text-align: center;
-  margin-top: 15%;
-`;
-
-export const ProfileIconWrapper = styled.div`
-  width: 30px;
-  height: 30px;
-  background-color: white;
-  border-radius: 50%;
-  text-align: center;
-  align-items: center;
-  :first-child {
-    margin-top: 7px;
-    margin-left: 7px;
-  }
-`;
-
-export const ListWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-right: 1px solid #e5e7eb;
+  margin-top: 14%;
 `;
 
 export const ProductsTable = styled.table`
@@ -189,4 +117,63 @@ export const ProductsTable = styled.table`
 
 export const ProductsRow = styled.div`
   background: white;
+`;
+
+export const ListWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-right: 1px solid #e5e7eb;
+`;
+
+
+
+export const TotalDebts = styled.div`
+  display: flex;
+  width: 50%;
+  margin-top: 15px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 18px;
+  background-color: #e5e7eb;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  .red {
+    color: red;
+    font-weight: 600;
+  }
+  .green {
+    color: green;
+    font-weight: 600;
+  }
+  p {
+    font-weight: 600;
+  }
+`;
+
+export const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+export const MainDateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  /* margin-top: 15px; */
+  align-self: end;
+`;
+
+export const Input = styled.input`
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 150px;
+`;
+
+export const FlexWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;

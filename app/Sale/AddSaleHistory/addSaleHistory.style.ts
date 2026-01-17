@@ -51,15 +51,7 @@ export const SelectWrapper = styled.div`
   p {
     font-size: 18px;
   }
-  select {
-    width: 51%;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 2px solid #64748b;
-  }
-  option {
-    color: black;
-  }
+
 `;
 
 export const InputWrapper = styled.div`
@@ -74,7 +66,7 @@ export const InputWrapper = styled.div`
   input {
     outline: none;
   }
-  #input{
+  #input {
     margin-left: 16px;
   }
 `;
@@ -350,7 +342,7 @@ export const NoteWrapper = styled.div`
   width: 40%;
   font-size: 18px;
   padding: 0px 15px;
-  p{
+  p {
     margin-top: 20px;
   }
 

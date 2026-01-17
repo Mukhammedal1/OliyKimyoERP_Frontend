@@ -27,35 +27,35 @@ const LayoutPage = ({ children }: { children: React.ReactNode }) => {
         </LogoWrapper>
         <SectionWrapper onClick={() => router.push("/dashboard")}>
           <DashboardIcon />
-          <Button>Dashboard</Button>
+          <Button>Дашбоард</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/transaction")}>
           <IncomeExpenseIcon />
-          <Button>Kirim/Chiqim</Button>
+          <Button>Кирим/Чиким</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/sale-history")}>
           <SalesHistoryIcon />
-          <Button>Sotuvlar tarixi</Button>
+          <Button>Сотувлар</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/purchase-history")}>
           <PurchaseHistoryIcon />
-          <Button>Xaridlar tarixi</Button>
+          <Button>Харидлар</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/products")}>
           <ProductsIcon />
-          <Button>Mahsulotlar</Button>
+          <Button>Маҳсулотлар</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/customer")}>
           <CustomersIcon />
-          <Button>Mijozlar</Button>
+          <Button>Мижозлар</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/supplier")}>
           <SuppliersIcon />
-          <Button>Ta'minotchilar</Button>
+          <Button>Таминотчилар</Button>
         </SectionWrapper>
         <SectionWrapper onClick={() => router.push("/settings")}>
           <SettingsIcon />
-          <Button>Sozlamalar</Button>
+          <Button>Созламалар</Button>
         </SectionWrapper>
       </Sidebar>
 

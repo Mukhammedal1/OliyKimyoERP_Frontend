@@ -7,7 +7,7 @@ export const createSale = async (data: Sale) => {
     const res = await instance.post("/sale", data);
     return res.data;
   } catch (e) {
-    throw e
+    throw e;
   }
 };
 
@@ -17,7 +17,15 @@ export const getAllSale = async () => {
     return res.data;
   } catch (e) {
     throw e;
+  }
+};
 
+export const getAllSaleByCustomerId = async (id: string) => {
+  try {
+    const res = await instance.get(`/sale/customerSales/${id}`);
+    return res.data;
+  } catch (e) {
+    throw e;
   }
 };
 
@@ -27,7 +35,6 @@ export const getSaleById = async (id: string) => {
     return res.data;
   } catch (e) {
     throw e;
-
   }
 };
 
@@ -37,7 +44,6 @@ export const updateSale = async ({ id, data }: UpdateInterface) => {
     return res.data;
   } catch (e) {
     throw e;
-
   }
 };
 
@@ -47,6 +53,5 @@ export const deleteSale = async (id: string) => {
     return res.data;
   } catch (e) {
     throw e;
-
   }
 };

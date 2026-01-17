@@ -7,6 +7,7 @@ import {
   Input,
   InputWrapper,
   NavWrapper,
+  NoteWrapper,
   ProfileIconWrapper,
   ProfileWrapper,
 } from "./addCustomer.style";
@@ -19,6 +20,7 @@ const AddCustomerPage = () => {
   const [name, setName] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
   const [debt_amount, setDebtAmount] = useState("");
+  const [note, setNote] = useState("");
 
   const { mutate: createCustomer, isPending } = useCreateCustomer();
 
@@ -36,6 +38,7 @@ const AddCustomerPage = () => {
         name,
         phone_number,
         debt_amount: Number(debt_amount) || 0,
+        note: note,
       },
       {
         onSuccess: () => {
@@ -113,6 +116,20 @@ const AddCustomerPage = () => {
               }}
             />
           </Input>
+        </InputWrapper>
+        <InputWrapper>
+          <p>Izoh</p>
+          <NoteWrapper>
+            <textarea
+              value={note}
+              onChange={(e) => {
+                setNote(e.target.value);
+              }}
+              name=""
+              id=""
+              placeholder="Izoh..."
+            ></textarea>
+          </NoteWrapper>
         </InputWrapper>
       </ContentWrapper>
       <ButtonWrapper>
