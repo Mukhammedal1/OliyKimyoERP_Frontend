@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React from "react";
+import { useRouter } from "next/router";
 import {
   Button,
   Container,
@@ -7,56 +8,52 @@ import {
   SectionWrapper,
   Sidebar,
 } from "./layout.style";
-import { useRouter } from "next/router";
-import { SalesHistoryIcon } from "../../icons/sale.icon";
-import { DashboardIcon } from "../../icons/dashboard.icon";
-import { PurchaseHistoryIcon } from "../../icons/purchase.icon";
-import { IncomeExpenseIcon } from "../../icons/incomeexpense.icon";
-import { ProductsIcon } from "../../icons/products.icon";
-import { CustomersIcon } from "../../icons/customer.icon";
-import { SuppliersIcon } from "../../icons/supplier.icon";
-import { SettingsIcon } from "../../icons/settings.icon";
+
+import { DashboardIcon } from "@/icons/dashboard.icon";
+import { IncomeExpenseIcon } from "@/icons/incomeexpense.icon";
+import { SalesHistoryIcon } from "@/icons/sale.icon";
+import { PurchaseHistoryIcon } from "@/icons/purchase.icon";
+import { ProductsIcon } from "@/icons/products.icon";
+import { CustomersIcon } from "@/icons/customer.icon";
+import { SuppliersIcon } from "@/icons/supplier.icon";
+import { SettingsIcon } from "@/icons/settings.icon";
 
 const LayoutPage = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const activePath = router.pathname; // sahifa active
+
+  const sections = [
+    { path: "/dashboard", label: "Дашбоард", icon: <DashboardIcon /> },
+    { path: "/transaction", label: "Кирим/Чиким", icon: <IncomeExpenseIcon /> },
+    { path: "/sale-history", label: "Сотувлар", icon: <SalesHistoryIcon /> },
+    {
+      path: "/purchase-history",
+      label: "Харидлар",
+      icon: <PurchaseHistoryIcon />,
+    },
+    { path: "/products", label: "Маҳсулотлар", icon: <ProductsIcon /> },
+    { path: "/customer", label: "Мижозлар", icon: <CustomersIcon /> },
+    { path: "/supplier", label: "Таминотчилар", icon: <SuppliersIcon /> },
+    { path: "/settings", label: "Созламалар", icon: <SettingsIcon /> },
+  ];
+
   return (
     <Container>
       <Sidebar>
         <LogoWrapper>
-          <img src="/logo.png" alt="" />
+          <img src="/logo.png" alt="Logo" />
         </LogoWrapper>
-        <SectionWrapper onClick={() => router.push("/dashboard")}>
-          <DashboardIcon />
-          <Button>Дашбоард</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/transaction")}>
-          <IncomeExpenseIcon />
-          <Button>Кирим/Чиким</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/sale-history")}>
-          <SalesHistoryIcon />
-          <Button>Сотувлар</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/purchase-history")}>
-          <PurchaseHistoryIcon />
-          <Button>Харидлар</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/products")}>
-          <ProductsIcon />
-          <Button>Маҳсулотлар</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/customer")}>
-          <CustomersIcon />
-          <Button>Мижозлар</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/supplier")}>
-          <SuppliersIcon />
-          <Button>Таминотчилар</Button>
-        </SectionWrapper>
-        <SectionWrapper onClick={() => router.push("/settings")}>
-          <SettingsIcon />
-          <Button>Созламалар</Button>
-        </SectionWrapper>
+
+        {sections.map((sec) => (
+          <SectionWrapper
+            key={sec.path}
+            active={activePath === sec.path} // router bilan active qilish
+            onClick={() => router.push(sec.path)}
+          >
+            {sec.icon}
+            <Button>{sec.label}</Button>
+          </SectionWrapper>
+        ))}
       </Sidebar>
 
       <Content>{children}</Content>

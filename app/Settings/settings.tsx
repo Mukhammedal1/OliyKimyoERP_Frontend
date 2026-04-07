@@ -92,7 +92,7 @@ const SettingsPage = () => {
             </TextIconWrapper>
           </SectionWrapper>
           <SectionWrapper>
-            <TextIconWrapper onClick={handleClickPassword}>
+            <TextIconWrapper>
               <SettingsIconWrapper>
                 <FaLock size={50} color="white" />
               </SettingsIconWrapper>

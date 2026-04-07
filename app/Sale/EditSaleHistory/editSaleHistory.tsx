@@ -28,7 +28,7 @@ import {
   TableHead,
   TableWrapper,
   TitleWrapper,
-} from "./addSaleHistory.style";
+} from "./editSaleHistory.style";
 import {
   useCreateCustomer,
   useGetAllCustomer,
@@ -44,18 +44,68 @@ import { DeleteIcon } from "../../../icons/delete-icon";
 import { EditIcon } from "../../../icons/edit-icon";
 import { formatDate } from "../../../utils/formatDate";
 import Draggable from "react-draggable";
-import { useCreateSale } from "../../../hooks/useSale";
+import {
+  useCreateSale,
+  useGetSaleById,
+  useUpdateSale,
+} from "../../../hooks/useSale";
 import { useRouter } from "next/router";
 import Select from "react-select";
 
-const AddSaleHistoryPage = () => {
+const EditSaleHistoryPage = () => {
   const router = useRouter();
   const nodeRef = useRef(null);
+
+  const { id } = router.query;
+  const { data, isLoading } = useGetSaleById(id as string);
+  const [customerProducts, setCustomerProducts] = useState<any[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const { mutate: updateSale, isPending } = useUpdateSale();
+  const [saleData, setSaleData] = useState({
+    _id: "",
+    customer: { _id: "" },
+    total_amount: 0,
+    paid_amount: 0,
+    note: "",
+    customer_phone: "",
+    is_new_customer: false,
+    products: [{ product_id: "", quantity: 0, price: 0, total_price: 0 }],
+  });
+
+  useEffect(() => {
+    if (data) {
+      setSaleData({
+        _id: data._id || "",
+        customer: data.customer._id || "",
+        total_amount: data.total_amount || 0,
+        paid_amount: data.paid_amount || 0,
+        note: data.note || "",
+        customer_phone: data.customer_phone || "",
+        is_new_customer: data.is_new_customer || false,
+        products: data.products || [],
+      });
+
+      setCustomerProducts(
+        data.products.map((p: any) => {
+          const newProduct = {
+            product_id: p.product_id._id,
+            product_name: p.product_id.name,
+            product_unit: p.product_id.unit.name,
+            price: Number(p.price),
+            quantity: Number(p.quantity),
+            total_price: Number(p.price) * Number(p.quantity),
+          };
+          return newProduct;
+        }),
+      );
+      setTotalPrice(data.total_amount);
+    }
+  }, [data]);
 
   const [phone_number, setPhoneNumber] = useState("");
   const [customer, setCustomer] = useState<string | null>("");
   const [paid_amount, setPaidAmount] = useState("");
-  const [totalPrice, setTotalPrice] = useState(0);
   const [note, setNote] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(false);
 
@@ -65,7 +115,6 @@ const AddSaleHistoryPage = () => {
 
   const [productState, setProductState] = useState("productList");
   const [stock_amount, setStockAmount] = useState(0);
-  const [customerProducts, setCustomerProducts] = useState<any[]>([]);
 
   const { mutate: createSale } = useCreateSale();
   const {
@@ -73,6 +122,7 @@ const AddSaleHistoryPage = () => {
     isLoading: isCustomerLoading,
     refetch: refetchCustomer,
   } = useGetAllCustomer();
+
   const customerOptions = customers.map((c: any) => ({
     value: c._id,
     label: c.name,
@@ -151,7 +201,7 @@ const AddSaleHistoryPage = () => {
     setProductState("productList");
   };
 
-  const handleCreateSale = () => {
+  const handleUpdateSale = () => {
     if (customerProducts.length == 0) {
       toast.error("Iltimos, Mijoz mahsulotlarini qo'shing");
       return;
@@ -160,18 +210,18 @@ const AddSaleHistoryPage = () => {
       toast.error("Iltimos, Jami summa miqdorini kiriting");
       return;
     }
-    if (!paid_amount) {
+    if (!saleData.paid_amount) {
       toast.error("Iltimos, To'langan summani kiriting");
       return;
     }
-    if (Number(totalPrice) < Number(paid_amount)) {
+    if (Number(totalPrice) < Number(saleData.paid_amount)) {
       toast.error("To'langan summa jami summadan oshiq bo'lishi mumkin emas!");
       return;
     }
     if (
-      Number(totalPrice) !== Number(paid_amount) &&
-      isNewCustomer === true &&
-      !phone_number
+      Number(totalPrice) !== Number(saleData.paid_amount) &&
+      saleData.is_new_customer === true &&
+      !saleData.customer_phone
     ) {
       toast.error(
         "Iltimos, Qolgan qarzni yozish uchun telefon raqamni yozing!",
@@ -179,9 +229,9 @@ const AddSaleHistoryPage = () => {
       return;
     }
     if (
-      Number(totalPrice) !== Number(paid_amount) &&
-      isNewCustomer === false &&
-      !customer
+      Number(totalPrice) !== Number(saleData.paid_amount) &&
+      saleData.is_new_customer === false &&
+      !saleData.customer
     ) {
       toast.error(
         "Iltimos, Qolgan qarzni yozish uchun mijozni ro'yxatga qo'shing!",
@@ -190,25 +240,29 @@ const AddSaleHistoryPage = () => {
     }
 
     const formattedProducts = customerProducts.map((p) => ({
-      product_id: p.product_id,
+      product_id:
+        typeof p.product_id === "object" ? p.product_id._id : p.product_id,
       quantity: Number(p.quantity),
       price: Number(p.price),
       total_price: Number(p.total_price),
     }));
 
-    createSale(
+    updateSale(
       {
-        customer: isNewCustomer ? null : customer,
-        total_amount: totalPrice,
-        paid_amount: Number(paid_amount),
-        note,
-        customer_phone: Number(phone_number),
-        is_new_customer: isNewCustomer,
-        products: formattedProducts,
+        id: saleData._id,
+        data: {
+          customer: saleData.is_new_customer ? null : saleData.customer,
+          total_amount: totalPrice,
+          paid_amount: Number(saleData.paid_amount),
+          note: saleData.note,
+          customer_phone: Number(saleData.customer_phone),
+          is_new_customer: saleData.is_new_customer,
+          products: formattedProducts,
+        },
       },
       {
         onSuccess: () => {
-          toast.success("Sotuv qo'shildi");
+          toast.success("Malumotlar muvaffaqiyatli saqlandi");
           router.push("/sale-history");
         },
         onError: (e: any) => {
@@ -241,7 +295,7 @@ const AddSaleHistoryPage = () => {
   return (
     <Container>
       <NavWrapper>
-        <span>Sotuv qo'shish</span>
+        <span>Sotuvni tahrirlash</span>
         <ProfileWrapper>
           <p>Muhammadali</p>
           <ProfileIconWrapper>
@@ -249,13 +303,13 @@ const AddSaleHistoryPage = () => {
           </ProfileIconWrapper>
         </ProfileWrapper>
       </NavWrapper>
-      {isCustomerLoading ? (
+      {isLoading || isCustomerLoading ? (
         <Spinner />
       ) : (
         <div>
           <ContentWrapper>
             <FirstWrapper>
-              {isNewCustomer ? (
+              {saleData.is_new_customer ? (
                 <SelectWrapper>
                   <p>Mijoz telefon raqami:</p>
                   <Input>
@@ -264,11 +318,11 @@ const AddSaleHistoryPage = () => {
                       placeholder="90 123 45 67"
                       maxLength={9}
                       minLength={9}
-                      value={phone_number}
+                      value={saleData.customer_phone}
                       onChange={(e) => {
                         const value = e.target.value;
                         if (/^\d{0,9}$/.test(value)) {
-                          setPhoneNumber(value);
+                          setSaleData({ ...saleData, customer_phone: value });
                         }
                       }}
                     />
@@ -282,13 +336,17 @@ const AddSaleHistoryPage = () => {
                     options={customerOptions}
                     value={
                       customerOptions.find(
-                        (option: any) => option.value === customer,
+                        (option: any) => option.value === saleData.customer,
                       ) || null
                     }
                     onChange={(selectedOption: any) => {
-                      setCustomer(selectedOption?.value || null);
+                      setSaleData({
+                        ...saleData,
+                        customer: selectedOption?.value,
+                      });
                     }}
                     isSearchable={true}
+                    placeholder="Mijozni tanlang"
                     menuPortalTarget={document.body}
                     styles={{
                       control: (base) => ({
@@ -312,7 +370,7 @@ const AddSaleHistoryPage = () => {
                         maxHeight: 120,
                         borderRadius: 8,
                       }),
-                      option: (base, state) => ({
+                      option: (base) => ({
                         ...base,
                         color: "black",
                         backgroundColor: "white",
@@ -330,8 +388,13 @@ const AddSaleHistoryPage = () => {
                 <input
                   id="input"
                   type="checkbox"
-                  checked={isNewCustomer}
-                  onChange={(e) => setIsNewCustomer(e.target.checked)}
+                  checked={saleData.is_new_customer}
+                  onChange={(e) => {
+                    setSaleData({
+                      ...saleData,
+                      is_new_customer: e.target.checked,
+                    });
+                  }}
                 />
                 <p>Yangi Mijoz</p>
               </InputWrapper>
@@ -484,16 +547,8 @@ const AddSaleHistoryPage = () => {
                       <Input2>
                         <input
                           type="number"
-                          // min={0}
-                          // placeholder="Mahsulot miqdori..."
-                          // onKeyDown={(e) => {
-                          //   if (e.key === "-" || e.key === "e") {
-                          //     e.preventDefault();
-                          //   }
-                          // }}
                           value={stock_amount}
                           disabled={true}
-                          // onChange={(e) => setProductAmount(e.target.value)}
                         />
                       </Input2>
                     </InputWrapper2>
@@ -534,14 +589,17 @@ const AddSaleHistoryPage = () => {
                     type="number"
                     min={0}
                     placeholder="To'langan summa..."
-                    value={paid_amount}
+                    value={saleData.paid_amount}
                     onKeyDown={(e) => {
                       if (e.key === "-" || e.key === "e") {
                         e.preventDefault();
                       }
                     }}
                     onChange={(e) => {
-                      setPaidAmount(e.target.value);
+                      setSaleData({
+                        ...saleData,
+                        paid_amount: Number(e.target.value),
+                      });
                     }}
                   />
                 </Input3>
@@ -550,9 +608,9 @@ const AddSaleHistoryPage = () => {
             <NoteWrapper>
               <p>Izoh:</p>
               <textarea
-                value={note}
+                value={saleData.note}
                 onChange={(e) => {
-                  setNote(e.target.value);
+                  setSaleData({ ...saleData, note: e.target.value });
                 }}
                 name=""
                 id=""
@@ -562,7 +620,9 @@ const AddSaleHistoryPage = () => {
           </PriceNoteWrapper>
 
           <ButtonWrapper>
-            <button onClick={handleCreateSale}>Qo'shish</button>
+            <button disabled={isPending} onClick={handleUpdateSale}>
+              {isPending ? "Saqlanmoqda..." : "Saqlash"}
+            </button>
             <button onClick={handleCancelSale}>Bekor qilish</button>
           </ButtonWrapper>
         </div>
@@ -571,4 +631,4 @@ const AddSaleHistoryPage = () => {
   );
 };
 
-export default AddSaleHistoryPage;
+export default EditSaleHistoryPage;

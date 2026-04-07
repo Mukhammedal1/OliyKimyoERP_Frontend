@@ -1,12 +1,13 @@
-import { LoadingText, SpinnerCircle, SpinnerWrapper } from "./loading.style";
+import { SpinnerWrapper } from "./loading.style";
 
 const Spinner: React.FC = () => {
   return (
     <SpinnerWrapper>
-      <SpinnerCircle />
-      <LoadingText>Yuklanmoqda...</LoadingText>
+      <div className="loader"></div>
     </SpinnerWrapper>
   );
 };
 
 export default Spinner;
+
+

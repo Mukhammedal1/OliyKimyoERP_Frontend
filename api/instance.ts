@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-  withCredentials: true, // refresh token cookiedan yuborish uchun
-  // timeout:50000
+  withCredentials: true, 
+  
 });
 
 // request interceptor

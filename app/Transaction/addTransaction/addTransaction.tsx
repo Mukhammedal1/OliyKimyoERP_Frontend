@@ -192,12 +192,12 @@ const AddTransactionPage = () => {
             ) : null}
 
             <PricesWrapper>
-              <p>Qarz to'lovi summasini kiriting:</p>
+              <p>Kirim summasini kiriting:</p>
               <Input3>
                 <input
                   type="number"
                   min={0}
-                  placeholder="Qarz to'lovi summasi..."
+                  placeholder="Kirim summasi..."
                   value={amount}
                   onKeyDown={(e) => {
                     if (e.key === "-" || e.key === "e") {

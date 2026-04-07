@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+interface SectionWrapperProps {
+  active?: boolean;
+}
+
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;
@@ -38,21 +42,28 @@ export const Button = styled.button`
   font-size: 20px;
 `;
 
-export const SectionWrapper = styled.div`
+export const SectionWrapper = styled.div<SectionWrapperProps>`
   display: flex;
   justify-content: flex-start;
   gap: 18px;
   align-items: center;
   width: 90%;
   margin: 0 auto;
+  padding: 2px 25px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+
+  background-color: ${(props) => (props.active ? "#334155" : "transparent")};
+  border-radius: ${(props) => (props.active ? "10px" : "0px")};
+
   &:hover {
     background-color: #334155;
     border-radius: 10px;
   }
-  padding: 2px 25px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
 
+  
   &:active {
     transform: scale(1.1);
   }
